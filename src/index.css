@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e27 0%, #12183a 50%, #0a0e27 100%);
+  color: #e0e0e0;
+}
+
+.neon-text-pink { color: #ff2a6d; text-shadow: 0 0 5px #ff2a6d, 0 0 10px #ff2a6d; }
+.neon-text-cyan { color: #05d9e8; text-shadow: 0 0 5px #05d9e8, 0 0 10px #05d9e8; }
+.neon-text-yellow { color: #f9c80e; text-shadow: 0 0 5px #f9c80e, 0 0 10px #f9c80e; }
+.neon-text-green { color: #00ff9d; text-shadow: 0 0 5px #00ff9d, 0 0 10px #00ff9d; }
+
+.neon-border-pink { border: 1px solid #ff2a6d; box-shadow: 0 0 5px #ff2a6d, inset 0 0 5px rgba(255,42,109,0.1); }
+.neon-border-cyan { border: 1px solid #05d9e8; box-shadow: 0 0 5px #05d9e8, inset 0 0 5px rgba(5,217,232,0.1); }
+.neon-border-yellow { border: 1px solid #f9c80e; box-shadow: 0 0 5px #f9c80e, inset 0 0 5px rgba(249,200,14,0.1); }
+.neon-border-green { border: 1px solid #00ff9d; box-shadow: 0 0 5px #00ff9d, inset 0 0 5px rgba(0,255,157,0.1); }
+
+.glass-card {
+  background: rgba(18, 24, 58, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-in { animation: slideIn 0.3s ease-out forwards; }
+
+@keyframes marquee-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.animate-marquee-up { animation: marquee-up 30s linear infinite; }
+.animate-marquee-up:hover { animation-play-state: paused; }
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px #05d9e8, 0 0 10px #05d9e8; }
+  100% { text-shadow: 0 0 10px #05d9e8, 0 0 20px #05d9e8, 0 0 30px #05d9e8; }
+}
+.animate-glow { animation: glow 2s ease-in-out infinite alternate; }
