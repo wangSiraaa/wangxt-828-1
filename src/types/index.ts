@@ -1,3 +1,14 @@
+export interface Remark {
+  id: string;
+  truckId: string;
+  type: 'deduction' | 'review' | 'suggestion';
+  title: string;
+  content: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Truck {
   id: string;
   name: string;
@@ -8,6 +19,7 @@ export interface Truck {
   activeViolations: number;
   licensePlate: string;
   status: 'active' | 'inactive';
+  remarks: Remark[];
   createdAt: string;
   updatedAt: string;
 }
@@ -63,4 +75,10 @@ export const VIOLATION_TYPES = [
   '未明码标价',
   '使用过期食材',
   '其他违规'
+];
+
+export const REMARK_TYPES = [
+  { value: 'deduction', label: '扣分说明' },
+  { value: 'review', label: '复查结论' },
+  { value: 'suggestion', label: '上屏建议' },
 ];

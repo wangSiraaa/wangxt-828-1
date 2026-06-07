@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Truck, Violation, SystemConfig, UserRole } from '../types';
+import { Truck, Violation, SystemConfig, UserRole, Remark } from '../types';
 import { storage, initializeMockData, generateId } from '../utils/storage';
 
 interface AppState {
@@ -17,6 +17,10 @@ interface AppState {
 
   addViolation: (violation: Partial<Violation>) => void;
   resolveViolation: (id: string) => void;
+
+  addRemark: (truckId: string, remark: Partial<Remark>) => void;
+  updateRemark: (truckId: string, remarkId: string, remark: Partial<Remark>) => void;
+  deleteRemark: (truckId: string, remarkId: string) => void;
 
   updateConfig: (config: Partial<SystemConfig>) => void;
   setCurrentRole: (role: UserRole) => void;
@@ -52,8 +56,9 @@ export const useStore = create<AppState>((set, get) => ({
       healthScore: truckData.healthScore ?? 80,
       rank: maxRank + 1,
       activeViolations: 0,
-      licensePlate: truckData.licensePlate,
+      licensePlate: truckData.licensePlate || '',
       status: 'active',
+      remarks: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -118,10 +123,76 @@ export const useStore = create<AppState>((set, get) => ({
     if (violation) {
       const remaining = updatedViolations.filter(v => v.truckId === violation.truckId && !v.resolved).length;
       const truck = get().trucks.find(t => t.id === violation.truckId);
-    if (truck) {
-      get().updateTruck(violation.truckId, { activeViolations: remaining });
+      if (truck) {
+        get().updateTruck(violation.truckId, { activeViolations: remaining });
+      }
     }
-    }
+  },
+
+  addRemark: (truckId, remarkData) => {
+    const truck = get().trucks.find(t => t.id === truckId);
+    if (!truck) return;
+
+    const newRemark: Remark = {
+      id: generateId(),
+      truckId,
+      type: remarkData.type || 'suggestion',
+      title: remarkData.title || '',
+      content: remarkData.content || '',
+      author: remarkData.author || '市场管理员',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const updatedTrucks = get().trucks.map(t => {
+      if (t.id === truckId) {
+        return {
+          ...t,
+          remarks: [...(t.remarks || []), newRemark],
+          updatedAt: new Date().toISOString(),
+        };
+      }
+      return t;
+    });
+
+    storage.setTrucks(updatedTrucks);
+    set({ trucks: updatedTrucks });
+  },
+
+  updateRemark: (truckId, remarkId, remarkData) => {
+    const updatedTrucks = get().trucks.map(t => {
+      if (t.id === truckId) {
+        return {
+          ...t,
+          remarks: (t.remarks || []).map(r =>
+            r.id === remarkId
+              ? { ...r, ...remarkData, updatedAt: new Date().toISOString() }
+              : r
+          ),
+          updatedAt: new Date().toISOString(),
+        };
+      }
+      return t;
+    });
+
+    storage.setTrucks(updatedTrucks);
+    set({ trucks: updatedTrucks });
+  },
+
+  deleteRemark: (truckId, remarkId) => {
+    const updatedTrucks = get().trucks.map(t => {
+      if (t.id === truckId) {
+        return {
+          ...t,
+          remarks: (t.remarks || []).filter(r => r.id !== remarkId),
+          updatedAt: new Date().toISOString(),
+        };
+      }
+      return t;
+    });
+
+    storage.setTrucks(updatedTrucks);
+    set({ trucks: updatedTrucks });
   },
 
   updateConfig: (configData) => {
