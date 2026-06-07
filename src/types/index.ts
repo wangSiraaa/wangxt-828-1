@@ -6,7 +6,7 @@ export interface Truck {
   healthScore: number;
   rank: number;
   activeViolations: number;
-  licensePlate?: string;
+  licensePlate: string;
   status: 'active' | 'inactive';
   createdAt: string;
   updatedAt: string;
@@ -31,16 +31,36 @@ export interface SystemConfig {
 
 export interface RankValidationResult {
   valid: boolean;
-  warnings: string[];
+  reason?: string;
+  warnings?: string[];
   displayList: Truck[];
 }
 
 export type UserRole = 'owner' | 'admin' | 'inspector' | 'display';
 
 export const CATEGORIES = [
-  '烧烤', '炸物', '饮品', '面食', '甜品', '海鲜', '火锅', '主食', '小吃', '其他'
+  '烧烤',
+  '麻辣烫',
+  '奶茶饮品',
+  '炸鸡汉堡',
+  '臭豆腐',
+  '烤冷面',
+  '手抓饼',
+  '寿司刺身',
+  '甜品冰淇淋',
+  '炸物',
+  '饮品',
+  '面食',
+  '甜品',
+  '其他'
 ];
 
 export const VIOLATION_TYPES = [
-  '卫生不达标', '占道经营', '超时经营', '油烟扰民', '证照不全', '价格欺诈', '其他'
+  '卫生不达标',
+  '占道经营',
+  '超时营业',
+  '噪音扰民',
+  '未明码标价',
+  '使用过期食材',
+  '其他违规'
 ];

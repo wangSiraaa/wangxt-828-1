@@ -10,7 +10,7 @@ export const validateRanking = (trucks: Truck[], config: SystemConfig): RankVali
   sortedTrucks = [...normalTrucks, ...violationTrucks];
 
   const eligibleTrucks = sortedTrucks.filter(
-    t => t.healthScore >= config.minHealthScore && t.status === 'active' && t.activeViolations === 0
+    t => t.healthScore >= config.minHealthScore && t.status === 'active'
   );
 
   const lowScoreTrucks = sortedTrucks.filter(

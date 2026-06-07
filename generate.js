@@ -392,6 +392,282 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 }));
 `,
+
+  'src/index.css': `@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e27 0%, #12183a 50%, #0a0e27 100%);
+  color: #e0e0e0;
+}
+
+.neon-text-pink { color: #ff2a6d; text-shadow: 0 0 5px #ff2a6d, 0 0 10px #ff2a6d; }
+.neon-text-cyan { color: #05d9e8; text-shadow: 0 0 5px #05d9e8, 0 0 10px #05d9e8; }
+.neon-text-yellow { color: #f9c80e; text-shadow: 0 0 5px #f9c80e, 0 0 10px #f9c80e; }
+.neon-text-green { color: #00ff9d; text-shadow: 0 0 5px #00ff9d, 0 0 10px #00ff9d; }
+
+.neon-border-pink { border: 1px solid #ff2a6d; box-shadow: 0 0 5px #ff2a6d, inset 0 0 5px rgba(255,42,109,0.1); }
+.neon-border-cyan { border: 1px solid #05d9e8; box-shadow: 0 0 5px #05d9e8, inset 0 0 5px rgba(5,217,232,0.1); }
+.neon-border-yellow { border: 1px solid #f9c80e; box-shadow: 0 0 5px #f9c80e, inset 0 0 5px rgba(249,200,14,0.1); }
+.neon-border-green { border: 1px solid #00ff9d; box-shadow: 0 0 5px #00ff9d, inset 0 0 5px rgba(0,255,157,0.1); }
+
+.glass-card {
+  background: rgba(18, 24, 58, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-in { animation: slideIn 0.3s ease-out forwards; }
+
+@keyframes marquee-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.animate-marquee-up { animation: marquee-up 30s linear infinite; }
+.animate-marquee-up:hover { animation-play-state: paused; }
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px #05d9e8, 0 0 10px #05d9e8; }
+  100% { text-shadow: 0 0 10px #05d9e8, 0 0 20px #05d9e8, 0 0 30px #05d9e8; }
+}
+.animate-glow { animation: glow 2s ease-in-out infinite alternate; }
+`,
+
+  'src/components/ui/NeonCard.tsx': `import { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+
+interface NeonCardProps {
+  children: ReactNode;
+  className?: string;
+  color?: 'cyan' | 'pink' | 'yellow' | 'green';
+  glow?: boolean;
+  style?: React.CSSProperties;
+}
+
+export default function NeonCard({ children, className, color = 'cyan', glow = false, style }: NeonCardProps) {
+  const borders: Record<string, string> = {
+    cyan: 'border-neon-cyan/50 hover:border-neon-cyan',
+    pink: 'border-neon-pink/50 hover:border-neon-pink',
+    yellow: 'border-neon-yellow/50 hover:border-neon-yellow',
+    green: 'border-neon-green/50 hover:border-neon-green',
+  };
+  const glows: Record<string, string> = {
+    cyan: 'shadow-neon-cyan', pink: 'shadow-neon-pink',
+    yellow: 'shadow-neon-yellow', green: 'shadow-neon-green',
+  };
+  return (
+    <div style={style} className={cn('glass-card rounded-xl p-6 transition-all duration-300 border', borders[color], glow && glows[color], className)}>
+      {children}
+    </div>
+  );
+}
+`,
+
+  'src/components/ui/NeonButton.tsx': `import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+
+interface NeonButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  size?: 'sm' | 'md' | 'lg';
+  glow?: boolean;
+}
+
+export default function NeonButton({ children, variant = 'primary', size = 'md', glow, className, ...props }: NeonButtonProps) {
+  const variants: Record<string, string> = {
+    primary: 'bg-neon-cyan/20 text-neon-cyan border-neon-cyan/50 hover:bg-neon-cyan/30 hover:border-neon-cyan',
+    secondary: 'bg-neon-purple/20 text-neon-pink border-neon-pink/50 hover:bg-neon-purple/30 hover:border-neon-pink',
+    danger: 'bg-red-900/30 text-red-400 border-red-500/50 hover:bg-red-900/50 hover:border-red-500',
+    success: 'bg-neon-green/20 text-neon-green border-neon-green/50 hover:bg-neon-green/30 hover:border-neon-green',
+    warning: 'bg-neon-yellow/20 text-neon-yellow border-neon-yellow/50 hover:bg-neon-yellow/30 hover:border-neon-yellow',
+  };
+  const sizes: Record<string, string> = { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2 text-base', lg: 'px-6 py-3 text-lg' };
+  const glows: Record<string, string> = {
+    primary: 'shadow-neon-cyan', secondary: 'shadow-neon-pink',
+    danger: 'shadow-lg shadow-red-500/30', success: 'shadow-neon-green', warning: 'shadow-neon-yellow',
+  };
+  return (
+    <button className={cn('rounded-lg font-medium transition-all duration-300 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neon-bg disabled:opacity-50 disabled:cursor-not-allowed',
+      variants[variant], sizes[size], glow && glows[variant], className)} {...props}>
+      {children}
+    </button>
+  );
+}
+`,
+
+  'src/components/ui/NeonInput.tsx': `import { InputHTMLAttributes, forwardRef } from 'react';
+import { cn } from '@/lib/utils';
+
+interface NeonInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+}
+
+const NeonInput = forwardRef<HTMLInputElement, NeonInputProps>(({ label, error, className, ...props }, ref) => (
+  <div className="space-y-1">
+    {label && <label className="block text-sm font-medium text-gray-300">{label}</label>}
+    <input ref={ref} className={cn('w-full px-4 py-2 rounded-lg bg-neon-bgLight/50 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all duration-200',
+      error && 'border-red-500 focus:border-red-500 focus:ring-red-500', className)} {...props} />
+    {error && <p className="text-sm text-red-400">{error}</p>}
+  </div>
+));
+NeonInput.displayName = 'NeonInput';
+export default NeonInput;
+`,
+
+  'src/components/ui/NeonSelect.tsx': `import { SelectHTMLAttributes, forwardRef } from 'react';
+import { cn } from '@/lib/utils';
+
+interface NeonSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  error?: string;
+  options: { value: string; label: string }[];
+}
+
+const NeonSelect = forwardRef<HTMLSelectElement, NeonSelectProps>(({ label, error, options, className, ...props }, ref) => (
+  <div className="space-y-1">
+    {label && <label className="block text-sm font-medium text-gray-300">{label}</label>}
+    <select ref={ref} className={cn('w-full px-4 py-2 rounded-lg bg-neon-bgLight/50 border border-gray-600 text-white focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all duration-200',
+      error && 'border-red-500 focus:border-red-500 focus:ring-red-500', className)} {...props}>
+      {options.map(o => <option key={o.value} value={o.value} className="bg-neon-bgLight">{o.label}</option>)}
+    </select>
+    {error && <p className="text-sm text-red-400">{error}</p>}
+  </div>
+));
+NeonSelect.displayName = 'NeonSelect';
+export default NeonSelect;
+`,
+
+  'src/components/ui/NeonModal.tsx': `import { ReactNode, useEffect } from 'react';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface NeonModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export default function NeonModal({ isOpen, onClose, title, children, className }: NeonModalProps) {
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className={cn('relative z-10 w-full max-w-lg glass-card rounded-2xl neon-border-cyan animate-slide-in', className)}>
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <h3 className="text-xl font-bold neon-text-cyan font-display">{title}</h3>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors"><X className="w-5 h-5" /></button>
+        </div>
+        <div className="p-6">{children}</div>
+      </div>
+    </div>
+  );
+}
+`,
+
+  'src/components/Navbar.tsx': `import { Link, useLocation } from 'react-router-dom';
+import { Home, Truck, ListOrdered, AlertTriangle, Monitor, Settings, Users } from 'lucide-react';
+import { useAppStore } from '@/store';
+import { UserRole } from '@/types';
+import { cn } from '@/lib/utils';
+
+const navItems = [
+  { path: '/', label: '首页', icon: Home },
+  { path: '/trucks', label: '餐车管理', icon: Truck },
+  { path: '/ranking', label: '排位管理', icon: ListOrdered },
+  { path: '/violations', label: '违规记录', icon: AlertTriangle },
+  { path: '/display', label: '大屏展示', icon: Monitor },
+  { path: '/settings', label: '系统设置', icon: Settings },
+];
+
+const roles: { value: UserRole; label: string }[] = [
+  { value: 'owner', label: '摊主' },
+  { value: 'admin', label: '管理员' },
+  { value: 'inspector', label: '巡查员' },
+  { value: 'display', label: '大屏' },
+];
+
+export default function Navbar() {
+  const location = useLocation();
+  const { currentRole, setRole } = useAppStore();
+  if (location.pathname === '/display') return null;
+
+  return (
+    <nav className="glass-card border-b border-neon-cyan/30 sticky top-0 z-40">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-pink to-neon-cyan flex items-center justify-center">
+              <span className="text-white font-bold font-display text-lg">夜</span>
+            </div>
+            <span className="text-xl font-bold font-display neon-text-cyan">夜市排位系统</span>
+          </div>
+          <div className="hidden md:flex items-center space-x-1">
+            {navItems.map(item => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <Link key={item.path} to={item.path} className={cn('flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300',
+                  isActive ? 'bg-neon-cyan/20 text-neon-cyan neon-border-cyan' : 'text-gray-400 hover:text-white hover:bg-white/5')}>
+                  <Icon className="w-4 h-4" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Users className="w-4 h-4 text-gray-400" />
+            <select value={currentRole} onChange={e => setRole(e.target.value as UserRole)}
+              className="bg-neon-bgLight/50 border border-gray-600 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-neon-cyan">
+              {roles.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="md:hidden flex items-center justify-around py-2 border-t border-gray-700">
+          {navItems.slice(0, 5).map(item => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link key={item.path} to={item.path} className={cn('flex flex-col items-center p-2 rounded-lg transition-all', isActive ? 'text-neon-cyan' : 'text-gray-400')}>
+                <Icon className="w-5 h-5" />
+                <span className="text-xs mt-1">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+}
+`,
 };
 
 Object.entries(files).forEach(([filePath, content]) => {

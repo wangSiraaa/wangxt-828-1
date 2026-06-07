@@ -19,7 +19,7 @@ export default function SettingsPage() {
 
   const handleReset = () => {
     if (confirm('确定要重置为默认设置吗？')) {
-      const defaults = { id: "default", minHealthScore: 60, maxConsecutiveSameCategory: 2 };
+      const defaults = { id: 'default', minHealthScore: 60, maxConsecutiveSameCategory: 2 };
       setLocalConfig(defaults);
       updateConfig(defaults);
     }
